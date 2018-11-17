@@ -395,19 +395,19 @@ public class DoublyLinkedList<T> {
 	 */
 	@Override
 	public String toString() {
-		String ret = "[";
+		StringBuilder builder = new StringBuilder();
+		builder.append('[');
 		ListNode<T> current = head;
 		
 		for (int i = 0; i < size; i++) {
-			ret += current.getValue();
+			builder.append(current.getValue());
 			if (!current.isTail()) {			// not the end
 				current = current.getNext();
-				ret += ", ";
+				builder.append(", ");
 			}
 		}
 		
-		ret += "]";
-		
-		return ret;
+		builder.append(']');
+		return builder.toString();
 	}
 }

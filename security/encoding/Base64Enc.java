@@ -4,10 +4,6 @@ import org.apache.commons.codec.binary.Base64;
 
 public class Base64Enc {
 	
-	public Base64Enc() {
-		
-	}
-	
 	/***
 	 * Base64 Encode using JDK
 	 * @param encodedMsg
