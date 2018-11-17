@@ -1,12 +1,12 @@
 package com.tpwang.adts.list;
 
-public class DoublyLinkedList {
-	private ListNode head, tail;
+public class DoublyLinkedList<T> {
+	private ListNode<T> head, tail;
 	private int size;
 	
-	public int getHead() { return head.getValue(); }
+	public T getHead() { return head.getValue();}
 	
-	public int getTail() { return tail.getValue(); }
+	public T getTail() { return tail.getValue(); }
 	
 	public int size() { return size; }
 	
@@ -26,7 +26,7 @@ public class DoublyLinkedList {
 		if (size == 0)
 			return;
 		
-		ListNode current = head;
+		ListNode<T> current = head;
 		while (!current.isTail()) {
 			System.out.print(current.getValue() + " ");
 			current = current.getNext();
@@ -39,7 +39,7 @@ public class DoublyLinkedList {
 	 * print from tail to head
 	 */
 	public void printAllReversed() {
-		ListNode current = tail;
+		ListNode<T> current = tail;
 		while (!current.isHead()) {
 			System.out.print(current.getValue() + " ");
 			current = current.getPrevious();
@@ -53,15 +53,15 @@ public class DoublyLinkedList {
 	 * @param value the number to add
 	 * @return DoublyLinkedList after the addition
 	 */
-	public DoublyLinkedList add(int value) {
+	public DoublyLinkedList<T> add(T value) {
 		if (tail == null) {		// list is empty
-			head = new ListNode(value, null, null);
+			head = new ListNode<T>(value, null, null);
 			tail = head;
 			size = 1;
 			return this;
 		}
 		
-		tail.setNext(new ListNode(value, tail, null));
+		tail.setNext(new ListNode<T>(value, tail, null));
 		tail = tail.getNext();
 		size++;
 		
@@ -76,8 +76,8 @@ public class DoublyLinkedList {
 	 * @param index position to add the value
 	 * @return DoublyLinkedList after the addition
 	 */
-	public DoublyLinkedList insertAt(int value, int index) {
-		ListNode current;
+	public DoublyLinkedList<T> insertAt(T value, int index) {
+		ListNode<T> current;
 		if (index < 0) {
 			if (Math.abs(index) > size)
 				return null;
@@ -93,13 +93,13 @@ public class DoublyLinkedList {
 		}
 		
 		if (current.isHead()) {
-			head.setPrevious(new ListNode(value, null, head));
+			head.setPrevious(new ListNode<T>(value, null, head));
 			head = head.getPrevious();
 		} else if (current.isTail() && index < 0) {
-			tail.setNext(new ListNode(value, tail, null));
+			tail.setNext(new ListNode<T>(value, tail, null));
 			tail = tail.getNext();
 		} else {			// neither head nor tail
-			ListNode newNode = new ListNode(value, current.getPrevious(), current);
+			ListNode<T> newNode = new ListNode<T>(value, current.getPrevious(), current);
 			if (!current.isHead())
 				current.getPrevious().setNext(newNode);
 			if (!current.isTail())
@@ -116,8 +116,8 @@ public class DoublyLinkedList {
 	 * @param value the number to add
 	 * @return DoublyLinkedList after the addition
 	 */
-	public DoublyLinkedList insertAtStart(int value) {
-		head.setPrevious(new ListNode(value, null, head));
+	public DoublyLinkedList<T> insertAtStart(T value) {
+		head.setPrevious(new ListNode<T>(value, null, head));
 		head = head.getPrevious();
 		
 		return this;
@@ -128,8 +128,8 @@ public class DoublyLinkedList {
 	 * @param value the number to add
 	 * @return DoublyLinkedList after the addition
 	 */
-	public DoublyLinkedList insertAtEnd(int value) {
-		tail.setNext(new ListNode(value, tail, null));
+	public DoublyLinkedList<T> insertAtEnd(T value) {
+		tail.setNext(new ListNode<T>(value, tail, null));
 		tail = tail.getNext();
 		
 		return this;
@@ -141,13 +141,13 @@ public class DoublyLinkedList {
 	 * @param value the number to remove
 	 * @return removal successful or not
 	 */
-	public boolean remove(int value) {
+	public boolean remove(T value) {
 		if (size == 0)
 			return false;
 		
 		int index = indexOf(value);
 		
-		ListNode current = head;
+		ListNode<T> current = head;
 		
 		for (int i = 0; i < index; i++) {
 			current = current.getNext();
@@ -209,7 +209,7 @@ public class DoublyLinkedList {
 	 * @return removal succesful or not
 	 */
 	public boolean removeAtIndex(int index) {
-		ListNode current;
+		ListNode<T> current;
 		
 		if (index < 0) {		// start from end
 			if (Math.abs(index) > size)						// out of bound
@@ -235,7 +235,7 @@ public class DoublyLinkedList {
 	 * internal method to delete a specific node
 	 * @param nodeToDelete
 	 */
-	private void removeNode(ListNode nodeToDelete) {
+	private void removeNode(ListNode<T> nodeToDelete) {
 		if (nodeToDelete.isHead()) {
 			if (nodeToDelete.isTail())		// just one nodes
 				removeFromEnd();
@@ -256,8 +256,8 @@ public class DoublyLinkedList {
 	 * @param index position of number to get
 	 * @return value at index
 	 */
-	public int get(int index) {
-		ListNode current;
+	public T get(int index) {
+		ListNode<T> current;
 		if (index < 0) {		// start from tail
 			if (Math.abs(index) > size)
 				index = Math.negateExact(size);
@@ -280,11 +280,11 @@ public class DoublyLinkedList {
 	 * @param value value to find
 	 * @return position of the value
 	 */
-	public int indexOf(int value) {
-		ListNode current = head;
+	public int indexOf(T value) {
+		ListNode<T> current = head;
 		int index = 0;
 		
-		while (current.getValue() != value) {
+		while (current.getValue().equals(value)) {
 			current = current.getNext();
 			index++;
 		}
@@ -295,14 +295,14 @@ public class DoublyLinkedList {
 	/***
 	 * return number of occurrence of value
 	 * @param value value to find occurrence of
-	 * @return number of occurence of value
+	 * @return number of occurance of value
 	 */
-	public int numOf(int value) {
+	public int numOf(T value) {
 		int count = 0;
-		ListNode current = head;
+		ListNode<T> current = head;
 		
 		for (int i = 0; i < size; i++) {
-			if (current.getValue() == value)
+			if (current.getValue().equals(value))
 				count++;
 			if (!current.isTail())
 				current = current.getNext();
@@ -318,18 +318,18 @@ public class DoublyLinkedList {
 	 * @param end exclusive
 	 * @return sliced DoublyLinkedList
 	 */
-	public DoublyLinkedList slice(int start, int end) {
+	public DoublyLinkedList<T> slice(int start, int end) {
 		if (start < 0)
 			start = 0;
 		if (end >= size)
 			end = size;
 		
-		ListNode current = head;
+		ListNode<T> current = head;
 		
 		for (int i = 0; i < start; i++)
 			current = current.getNext();
 		
-		DoublyLinkedList newList = new DoublyLinkedList();
+		DoublyLinkedList<T> newList = new DoublyLinkedList<T>();
 		for (int i = start; i < end; i++) {
 			newList.add(current.getValue());
 			if (!current.isTail())
@@ -343,10 +343,10 @@ public class DoublyLinkedList {
 	 * return an identical list
 	 * @return cloned list
 	 */
-	public DoublyLinkedList clone() {
-		DoublyLinkedList ret = new DoublyLinkedList();
+	public DoublyLinkedList<T> clone() {
+		DoublyLinkedList<T> ret = new DoublyLinkedList<T>();
 		
-		ListNode current = head;
+		ListNode<T> current = head;
 		for (int i = 0; i < size; i++) {
 			ret.add(current.getValue());
 			if (!current.isTail())
@@ -360,14 +360,14 @@ public class DoublyLinkedList {
 	 * reverse the whole list and return
 	 * @return reversed list
 	 */
-	public DoublyLinkedList reverse() {
-		ListNode first, second;
+	public DoublyLinkedList<T> reverse() {
+		ListNode<T> first, second;
 		
 		first = head;
 		second = first.getPrevious();
 		
 		for (int i = 0; i < size; i++) {
-			ListNode temp;
+			ListNode<T> temp;
 			if (second != null) {				// not head
 				temp = second.getNext();
 				second.setNext(second.getPrevious());
@@ -396,7 +396,7 @@ public class DoublyLinkedList {
 	@Override
 	public String toString() {
 		String ret = "[";
-		ListNode current = head;
+		ListNode<T> current = head;
 		
 		for (int i = 0; i < size; i++) {
 			ret += current.getValue();
@@ -407,40 +407,6 @@ public class DoublyLinkedList {
 		}
 		
 		ret += "]";
-		
-		return ret;
-	}
-	
-	/***
-	 * return whole list as char[]
-	 * @return list in Character Array
-	 */
-	public char[] toCharArray() {
-		String ret = "";
-		ListNode current = head;
-		
-		for (int i = 0; i < size; i++) {
-			ret += current.getValue();
-			if (!current.isTail())
-				current = current.getNext();
-		}
-		
-		return ret.toCharArray();
-	}
-	
-	/***
-	 * return whole list as int[]
-	 * @return list in Interger Array
-	 */
-	public int[] toIntArray() {
-		int[] ret = new int[size];
-		ListNode current = head;
-		
-		for (int i = 0; i < size; i++) {
-			ret[i] = current.getValue();
-			if (!current.isTail())
-				current = current.getNext();
-		}
 		
 		return ret;
 	}

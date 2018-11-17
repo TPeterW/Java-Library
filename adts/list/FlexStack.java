@@ -7,11 +7,11 @@ import com.tpwang.adts.list.ListNode;
  * @author Peter
  *
  */
-public class FlexStack {
-	private ListNode top;
+public class FlexStack<T> {
+	private ListNode<T> top;
 	private int size;
 	
-	public int getTop() { return top.getValue(); }
+	public T getTop() { return top.getValue(); }
 	
 	public int getSize() { return size; }
 	
@@ -28,8 +28,8 @@ public class FlexStack {
 	 * @param value
 	 * @return FlexStack
 	 */
-	public FlexStack push(int value) {
-		ListNode newNode = new ListNode(value, null, null);
+	public FlexStack<T> push(T value) {
+		ListNode<T> newNode = new ListNode<T>(value, null, null);
 		return push(newNode);
 	}
 	
@@ -38,7 +38,7 @@ public class FlexStack {
 	 * @param node
 	 * @return FlexStack
 	 */
-	public FlexStack push(ListNode node) {
+	public FlexStack<T> push(ListNode<T> node) {
 		if (top == null) {
 			top = node;
 			size = 1;
@@ -57,15 +57,15 @@ public class FlexStack {
 	 * Remove the top node
 	 * @return popped node
 	 */
-	public ListNode pop() {
-		ListNode ret = null;
+	public ListNode<T> pop() {
+		ListNode<T> ret = null;
 		if (size > 1) {
 			top = top.getNext();
 			ret = top.getPrevious();
 			top.setPrevious(null);
 			size--;
 		} else if (size == 1) {
-			ret = new ListNode(top.getValue(), null, null);
+			ret = new ListNode<T>(top.getValue(), null, null);
 			clear();
 		}
 		return ret;
@@ -76,7 +76,7 @@ public class FlexStack {
 	 * @param numToRemove
 	 * @return stack after popping numToRemove nodes
 	 */
-	public FlexStack pop(int numToRemove) {
+	public FlexStack<T> pop(int numToRemove) {
 		if (numToRemove > size)
 			return clear();
 		
@@ -96,7 +96,7 @@ public class FlexStack {
 	 * Clear whole stack
 	 * @return empty stack
 	 */
-	public FlexStack clear() {
+	public FlexStack<T> clear() {
 		top = null;
 		size = 0;
 		return this;
@@ -107,11 +107,11 @@ public class FlexStack {
 	 * @param depth
 	 * @return Integer
 	 */
-	public Integer getValueByDepth(int depth) {
+	public T getValueByDepth(int depth) {
 		if (depth >= size || depth < 0)
 			return null;
 		
-		ListNode current = top;
+		ListNode<T> current = top;
 		while (0 < depth--)
 			current = top.getNext();
 		
@@ -130,7 +130,7 @@ public class FlexStack {
 		if (size == 0)
 			return builder.append(" ]").toString();
 		
-		ListNode current = top;
+		ListNode<T> current = top;
 		while (!current.isTail()) {		// has next
 			builder.append(current.getValue());
 			builder.append(", ");
@@ -146,9 +146,9 @@ public class FlexStack {
 	 * Generate a new stack that is the reverse of the current one 
 	 * @return FlexStack
 	 */
-	public FlexStack reverse() {
-		FlexStack reversed = new FlexStack();
-		ListNode current = top;
+	public FlexStack<T> reverse() {
+		FlexStack<T> reversed = new FlexStack<T>();
+		ListNode<T> current = top;
 		
 		for (int i = 0; i < size; i++) {
 			reversed.push(current.getValue());

@@ -1,16 +1,29 @@
-package com.tpwang.adts.BinarySearchTree;
+package com.tpwang.adts.tree;
 
 import java.util.*;
 
-public class BinarySearchTree {
-	BSTNode root;
-	private int deepestLevel;
+public class BinarySearchTree<T> {
 	
-	public BSTNode getRoot() { return root; }
+	BSTNode<T> root;
+	private int deepestLevel;
+	private Comparator<T> comparator;
+	
+	public BSTNode<T> getRoot() { return root; }
 	
 	public BinarySearchTree() {
 		root = null;
 		deepestLevel = 0;
+		comparator = new Comparator<T>() {
+			public int compare(T o1, T o2) {
+				return o1.hashCode() - o2.hashCode();
+			}
+		};
+	}
+	
+	public BinarySearchTree(Comparator<T> comparator) {
+		root = null;
+		deepestLevel = 0;
+		this.comparator = comparator;
 	}
 	
 	/***
@@ -20,10 +33,9 @@ public class BinarySearchTree {
 	 * @param value
 	 * @return
 	 */
-	public boolean addNode(int value) {
-		// System.out.println(deepestLevel);
+	public boolean addNode(T value) {
 		if (root == null) {
-			root = new BSTNode(null, value);
+			root = new BSTNode<T>(null, value);
 			deepestLevel = 1;
 			return true;
 		} else {
@@ -37,13 +49,13 @@ public class BinarySearchTree {
 	 * @param value
 	 * @return success
 	 */
-	private boolean insertFrom(BSTNode current, int value, int currentLevel) {
+	private boolean insertFrom(BSTNode<T> current, T value, int currentLevel) {
 		if (value == current.getValue())
 			return false;
 		
-		if (value > current.getValue()) {			// go to right
+		if (comparator.compare(current.getValue(), value) < 0) {			// go to right
 			if (!current.hasRightChild()) {			// no right child
-				current.setRightChild(new BSTNode(current, value));
+				current.setRightChild(new BSTNode<T>(current, value));
 				if (deepestLevel < currentLevel + 1)
 					deepestLevel = currentLevel + 1;
 				return true;
@@ -53,7 +65,7 @@ public class BinarySearchTree {
 			}
 		} else {									// go to left
 			if (!current.hasLeftChild()) {
-				current.setLeftChild(new BSTNode(current, value));
+				current.setLeftChild(new BSTNode<T>(current, value));
 				if (deepestLevel < currentLevel + 1)
 					deepestLevel = currentLevel + 1;
 				return true;
@@ -69,7 +81,7 @@ public class BinarySearchTree {
 	 * @param value
 	 * @return
 	 */
-	public boolean deleteNode(int valueToDelete) {
+	public boolean deleteNode(T valueToDelete) {
 		if (root == null)
 			return false;
 		
@@ -88,8 +100,8 @@ public class BinarySearchTree {
 	 * @param current
 	 * @param valueToDelete
 	 */
-	private void removeFrom(BSTNode current, int valueToDelete) {
-		if (current.getValue() == valueToDelete) {
+	private void removeFrom(BSTNode<T> current, T valueToDelete) {
+		if (current.getValue().equals(valueToDelete)) {
 			if (!current.hasLeftChild() && !current.hasRightChild()) {			// leaf
 				if (current.isRoot())
 					root = null;
@@ -118,16 +130,16 @@ public class BinarySearchTree {
 			
 			if (current.hasLeftChild() && current.hasRightChild()) {		// has both child
 				// in-order predecessor
-				BSTNode predecessor = findLeftPredecessor(current);
+				BSTNode<T> predecessor = findLeftPredecessor(current);
 				current.setValue(predecessor.getValue());
 				replaceNode(predecessor);
 			}
 			
 			
 		} else {										// keep looking for it
-			if (valueToDelete > current.getValue())			// on the right
+			if (comparator.compare(current.getValue(), valueToDelete) < 0)	// on the right
 				removeFrom(current.getRightChild(), valueToDelete);
-			if (valueToDelete < current.getValue())			// on the left
+			else															// on the left
 				removeFrom(current.getLeftChild(), valueToDelete);
 		}
 	}
@@ -136,7 +148,7 @@ public class BinarySearchTree {
 	 * recursively replace the value of current node with that of in-order predecessor
 	 * @param current
 	 */
-	private void replaceNode(BSTNode current) {
+	private void replaceNode(BSTNode<T> current) {
 		if (!current.hasLeftChild() && !current.hasRightChild()) {			// leaf
 			current.getParent().removeChild(current.getValue());
 		} else if (!current.hasLeftChild() && current.hasRightChild()) {	// only right child
@@ -149,7 +161,7 @@ public class BinarySearchTree {
 		}
 	}
 	
-	private BSTNode findLeftPredecessor(BSTNode current) {
+	private BSTNode<T> findLeftPredecessor(BSTNode<T> current) {
 		if (current.hasLeftChild())			// no mistake
 			return findRightMost(current.getLeftChild());
 		
@@ -161,7 +173,7 @@ public class BinarySearchTree {
 	 * @param current
 	 * @return
 	 */
-	private BSTNode findRightMost(BSTNode current) {
+	private BSTNode<T> findRightMost(BSTNode<T> current) {
 		if (current.hasRightChild())
 			return findRightMost(current.getRightChild());
 		
@@ -174,7 +186,7 @@ public class BinarySearchTree {
 	 * @param value
 	 * @return
 	 */
-	public boolean containsNode(int valueToFind) {
+	public boolean containsNode(T valueToFind) {
 		return findNode(root, valueToFind) != null;
 	}
 	
@@ -184,11 +196,11 @@ public class BinarySearchTree {
 	 * @param valueToFind
 	 * @return
 	 */
-	public BSTNode findNode(BSTNode current, int valueToFind) {
-		if (current.getValue() == valueToFind)
+	public BSTNode<T> findNode(BSTNode<T> current, T valueToFind) {
+		if (current.getValue().equals(valueToFind))
 			return current;
 		else {
-			if (valueToFind > current.getValue()) {			// must be on the right
+			if (comparator.compare(current.getValue(), valueToFind) < 0) {			// must be on the right
 				if (current.getRightChild() == null)
 					return null;
 				else
@@ -208,8 +220,8 @@ public class BinarySearchTree {
 	 */
 	public void printLevelOrder() {
 		//TODO: 
-		ArrayList<BSTNode> currentLevel = new ArrayList<BSTNode>();
-		ArrayList<BSTNode> nextLevel = new ArrayList<BSTNode>();
+		ArrayList<BSTNode<T>> currentLevel = new ArrayList<BSTNode<T>>();
+		ArrayList<BSTNode<T>> nextLevel = new ArrayList<BSTNode<T>>();
 		
 		nextLevel.add(root);
 		int i, j;
@@ -251,8 +263,8 @@ public class BinarySearchTree {
 	 * @param currentLevel
 	 * @param nextLevel
 	 */
-	private void levelOrder(BSTNode current, int level, 
-			List<BSTNode> currentLevel, List<BSTNode> nextLevel) {
+	private void levelOrder(BSTNode<T> current, int level, 
+			List<BSTNode<T>> currentLevel, List<BSTNode<T>> nextLevel) {
 		int position;
 		for (position = 0; position < currentLevel.size(); position++) {
 			System.out.print(currentLevel.get(position).getValue() + "\t");
@@ -268,7 +280,7 @@ public class BinarySearchTree {
 	 * recursively called to print as input order
 	 * @param current
 	 */
-	private void preOrder(BSTNode current) {
+	private void preOrder(BSTNode<T> current) {
 		System.out.print(current.getValue() + " ");
 		if (current.hasLeftChild())
 			preOrder(current.getLeftChild());
@@ -280,7 +292,7 @@ public class BinarySearchTree {
 	 * recursively called to print in-order
 	 * @param current
 	 */
-	private void inOrder(BSTNode current) {
+	private void inOrder(BSTNode<T> current) {
 		if (current.hasLeftChild())
 			inOrder(current.getLeftChild());
 		
@@ -293,7 +305,7 @@ public class BinarySearchTree {
 	/***
 	 * recursively called to print post order
 	 */
-	private void postOrder(BSTNode current) {
+	private void postOrder(BSTNode<T> current) {
 		if (current.hasLeftChild())
 			postOrder(current.getLeftChild());
 		if (current.hasRightChild())
@@ -320,8 +332,8 @@ public class BinarySearchTree {
 	 * @param value
 	 * @return
 	 */
-	public boolean isRoot(int value) {
-		if (root.getValue() == value)
+	public boolean isRoot(T value) {
+		if (root.getValue().equals(value))
 			return true;
 		
 		return false;
@@ -345,7 +357,7 @@ public class BinarySearchTree {
 	 * @param current
 	 * @param currentLevel
 	 */
-	private void digDeeper(BSTNode current, int currentLevel) {
+	private void digDeeper(BSTNode<T> current, int currentLevel) {
 		if (currentLevel > deepestLevel)
 			deepestLevel = currentLevel;
 		

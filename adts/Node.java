@@ -1,12 +1,14 @@
 package com.tpwang.adts;
 
-public class Node {
-	private int value;
+public class Node<T> {
 	
-	public int getValue() { return value; }
+	private T value;
 	
-	public Node setValue(int value) { this.value = value; return this; }
+	public T getValue() { return value; }
+	
+	public Node<T> setValue(T value) { this.value = value; return this; }
 	
 	@Override
 	public String toString() { return String.valueOf(value); }
+
 }

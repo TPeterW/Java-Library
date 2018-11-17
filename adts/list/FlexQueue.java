@@ -7,13 +7,13 @@ import com.tpwang.adts.list.ListNode;
  * @author Peter
  *
  */
-public class FlexQueue {
-	private ListNode head, tail;
+public class FlexQueue<T> {
+	private ListNode<T> head, tail;
 	private int size;
 	
-	public int getFront() { return head.getValue(); }
+	public T getFront() { return head.getValue(); }
 	
-	public int getEnd() { return tail.getValue(); }
+	public T getEnd() { return tail.getValue(); }
 	
 	public int getSize() { return size; }
 	
@@ -30,8 +30,8 @@ public class FlexQueue {
 	 * Push value to the end of the queue (by value)
 	 * @return
 	 */
-	public FlexQueue push(int value) {
-		ListNode newNode = new ListNode(value, null, null);
+	public FlexQueue<T> push(T value) {
+		ListNode<T> newNode = new ListNode<T>(value, null, null);
 		return push(newNode);
 	}
 	
@@ -40,7 +40,7 @@ public class FlexQueue {
 	 * @param node
 	 * @return
 	 */
-	public FlexQueue push(ListNode node) {
+	public FlexQueue<T> push(ListNode<T> node) {
 		if (head == null) {
 			head = node;
 			tail = head;
@@ -61,8 +61,8 @@ public class FlexQueue {
 	 * Remove the first node in queue
 	 * @return popped node
 	 */
-	public ListNode pop() {
-		ListNode ret = null;
+	public ListNode<T> pop() {
+		ListNode<T> ret = null;
 		if (size == 0)
 			return null;
 		
@@ -72,7 +72,7 @@ public class FlexQueue {
 			head.setPrevious(null);
 			size--;
 		} else if (size == 1) {
-			ret = new ListNode(head.getValue(), null, null);
+			ret = new ListNode<T>(head.getValue(), null, null);
 			clear();
 		}
 		
@@ -84,7 +84,7 @@ public class FlexQueue {
 	 * @param numToRemove
 	 * @return queue after popping numToRemove nodes
 	 */
-	public FlexQueue pop(int numToRemove) {
+	public FlexQueue<T> pop(int numToRemove) {
 		if (numToRemove >= size)
 			return clear();
 		
@@ -100,7 +100,7 @@ public class FlexQueue {
 		}
 	}
 	
-	public FlexQueue clear() {
+	public FlexQueue<T> clear() {
 		head = tail = null;
 		size = 0;
 		return this;
@@ -117,7 +117,7 @@ public class FlexQueue {
 		if (size == 0)
 			return builder.append(" ]").toString();
 		
-		ListNode current = head;
+		ListNode<T> current = head;
 		while (!current.isTail()) {		// has next
 			builder.append(current.getValue());
 			builder.append(", ");
@@ -133,10 +133,10 @@ public class FlexQueue {
 	 * Generate a new queue that is the reverse of the current one
 	 * @return
 	 */
-	public FlexQueue reverse() {
-		FlexQueue reversed = new FlexQueue();
-		FlexStack stack = new FlexStack();		// temporary stack used to reverse
-		ListNode current = head;
+	public FlexQueue<T> reverse() {
+		FlexQueue<T> reversed = new FlexQueue<T>();
+		FlexStack<T> stack = new FlexStack<T>();		// temporary stack used to reverse
+		ListNode<T> current = head;
 		
 		for (int i = 0; i < size; i++) {
 			stack.push(current.getValue());
